@@ -21,4 +21,9 @@ Shindo.tests("Fog::Ovirt::Compute.new", ["ovirt"]) do
       test("it should respond to #{collection}") { compute.respond_to? collection }
     end
   end
+
+  tests("compute v4 with_initialization request") do
+    compute = Fog::Ovirt::Compute.new(:api_version => "v4")
+    test("it should respond to vm_start_with_initialization") { compute.respond_to? "vm_start_with_initialization" }
+  end
 end

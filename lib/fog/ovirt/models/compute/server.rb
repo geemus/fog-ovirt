@@ -123,12 +123,14 @@ module Fog
 
         def start_with_cloudinit(options = {})
           wait_for { !locked? } if options[:blocking]
-          user_data = if options[:use_custom_script]
-                        { :custom_script => options[:user_data] }
-                      else
-                        Hash[YAML.safe_load(options[:user_data]).map { |a| [a.first.to_sym, a.last] }]
-                      end
-          action_status = service.vm_start_with_cloudinit(:id => id, :user_data => user_data)
+          action_status = service.vm_start_with_cloudinit(:id => id, :user_data => fetch_user_data(options))
+          reload
+          action_status
+        end
+
+        def start_with_initialization(options = {})
+          wait_for { !locked? } if options[:blocking]
+          action_status = service.vm_start_with_initialization(:id => id, :user_data => fetch_user_data(options))
           reload
           action_status
         end
@@ -181,6 +183,14 @@ module Fog
 
         def to_s
           name
+        end
+
+        private
+
+        def fetch_user_data(options)
+          return { :custom_script => options[:user_data] } if options[:use_custom_script]
+
+          Hash[YAML.safe_load(options[:user_data]).map { |a| [a.first.to_sym, a.last] }]
         end
       end
     end

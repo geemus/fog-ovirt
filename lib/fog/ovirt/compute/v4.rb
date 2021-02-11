@@ -12,6 +12,7 @@ module Fog
 
         request :vm_action
         request :vm_start_with_cloudinit
+        request :vm_start_with_initialization
         request :destroy_vm
         request :create_vm
         request :update_vm
